@@ -1,0 +1,62 @@
+name: dockercompose2262336790742064197
+services:
+  backend:
+    build:
+      context: D:\DATNK15\BACKEND
+      dockerfile: BACKEND/Dockerfile
+    depends_on:
+      mongodb:
+        condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: https://+:443;http://+:80
+    networks:
+      default: null
+    ports:
+    - mode: ingress
+      target: 80
+      protocol: tcp
+    - mode: ingress
+      target: 80
+      published: "5000"
+      protocol: tcp
+    - mode: ingress
+      target: 443
+      protocol: tcp
+    volumes:
+    - type: bind
+      source: C:\Users\MSI\AppData\Roaming/Microsoft/UserSecrets
+      target: /root/.microsoft/usersecrets
+      read_only: true
+      bind:
+        create_host_path: true
+    - type: bind
+      source: C:\Users\MSI\AppData\Roaming/ASP.NET/Https
+      target: /root/.aspnet/https
+      read_only: true
+      bind:
+        create_host_path: true
+  mongodb:
+    environment:
+      MONGO_INITDB_ROOT_PASSWORD: bien123
+      MONGO_INITDB_ROOT_USERNAME: bien123
+    image: mongo
+    networks:
+      default: null
+    ports:
+    - mode: ingress
+      target: 27017
+      published: "27017"
+      protocol: tcp
+    restart: unless-stopped
+    volumes:
+    - type: volume
+      source: backendvolumev1
+      target: /data/db
+      volume: {}
+networks:
+  default:
+    name: dockercompose2262336790742064197_default
+volumes:
+  backendvolumev1:
+    name: dockercompose2262336790742064197_backendvolumev1
