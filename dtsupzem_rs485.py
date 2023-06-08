@@ -11,7 +11,8 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 while True:
     # Set up connection to the Pzem-017
-    instrument1 = minimalmodbus.Instrument('COM6', 1)
+    # Truong hop su dung tren ubuntu hoac raspberry thi doi thanh cong nay: ('/dev/ttyUSB0', 1)
+    instrument1 = minimalmodbus.Instrument('COM6', 1)    
     instrument1.serial.baudrate = 9600
     instrument1.serial.bytesize = 8
     instrument1.serial.parity = serial.PARITY_NONE

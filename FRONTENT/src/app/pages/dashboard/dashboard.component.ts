@@ -1,10 +1,11 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
 import * as moment from 'moment';
-import { DashBoardModel } from './dashboard.model';
 import { DashboardService } from './dashboard.service';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Pzem017Model } from './pzem017.model';
+import { DTSU666Model } from './dtsu666.model';
+import { FormControl, FormGroup } from '@angular/forms';
 //Custom Chart
 Chart.register(...registerables);
 Chart.register(ChartDataLabels);
@@ -28,14 +29,16 @@ export class DashboardComponent implements OnInit {
 
 
   //---------------------Thẻ Moment-------------------------
-  public dtsu_ngay!: Array<DashBoardModel>;
-  public dtsu1_ngay!: Array<DashBoardModel>
-  public dtsu2_ngay!: Array<DashBoardModel>;
+  public dtsu_ngay!: Array<DTSU666Model>;
+  public dtsu1_ngay!: Array<DTSU666Model>
+  public dtsu2_ngay!: Array<DTSU666Model>;
   public pzem017_ngay!: Array<Pzem017Model>;
+  //LÀm tròn
+  public lastDtsuNgay1!: Array<DTSU666Model>;
   //Lưu giá trị mới nhất
-  public lastDtsuNgay!: DashBoardModel;
-  public lastDtsu1Ngay!: DashBoardModel;
-  public lastDtsu2Ngay!: DashBoardModel;
+  public lastDtsuNgay!: DTSU666Model;
+  public lastDtsu1Ngay!: DTSU666Model;
+  public lastDtsu2Ngay!: DTSU666Model;
   public lastPzem017Ngay!: Pzem017Model;
 
 
@@ -49,6 +52,7 @@ export class DashboardComponent implements OnInit {
 
 
   //---------------------Thẻ Custom------------------------
+
   // Lọc
   datea!: any;
   dateb!: any;
@@ -56,14 +60,37 @@ export class DashboardComponent implements OnInit {
   endDate!: Date;
   //Model
   public pzem017custom!: Array<Pzem017Model>;
-  public dtsu66table!: Array<DashBoardModel>;
+  public dtsu66table!: Array<DTSU666Model>;
   public pzem017table!: Array<Pzem017Model>;
-  public daterangertable1!: Array<DashBoardModel>;
-  public dtsu666today!: Array<DashBoardModel>;
-  public dtsu666custom!: Array<DashBoardModel>;
+  public daterangertable1!: Array<DTSU666Model>;
+  public dtsu666today!: Array<DTSU666Model>;
+  public dtsu666custom!: Array<DTSU666Model>;
   //Chart
   public myChart!: Chart;
   isLoading = true;
+
+
+  //// Lọc
+  //datea!: any;
+  //dateb!: any;
+  //field!: string;
+  //startDate!: Date;
+  //endDate!: Date;
+  ////Model
+ 
+  //public pzem017custom!: Array<Pzem017Model>;
+  //public dtsu66table!: Array<DTSU666Model>;
+  //public pzem017table!: Array<Pzem017Model>;
+  //public daterangertable1!: Array<DTSU666Model>;
+  //public dtsu666today!: Array<DTSU666Model>;
+  //public dtsu666custom!: Array<DTSU666Model>;
+  //public dtsu666custom_alldata!: Array<DTSU666Model>;
+  ////Chart
+  //public myChart!: Chart;
+  //isLoading = true;
+  //signInForm = new FormGroup({
+  //  value: new FormControl('') // <== default value
+  //});
 
   //---------------------------------------------------------------------------------------------------------------------------------------
   // Hàm khởi tạo sau constructor
@@ -98,15 +125,11 @@ export class DashboardComponent implements OnInit {
 
       //---------------------Thẻ Custom--------------------
       this.Dashboard_Custom();
-    }, 179000);
+    }, 180000);
 
   }
 
   //---------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-
 
 
   // --------------------------------------TRIỂN KHAI CÁC PHƯƠNG THỨC CHO TỪNG TAB--------------------------------------------------------
@@ -131,7 +154,6 @@ export class DashboardComponent implements OnInit {
       console.error(error);
     }
   }
-
   async DTSU666_pqphi_moment() {
     try {
       const cs = await this.http.DTSU666_pqphimoment().toPromise();
@@ -169,6 +191,7 @@ export class DashboardComponent implements OnInit {
   }
 
 
+
   //---------------------Thẻ To day--------------------
   async Dashboard_Today() {
     // DTSU666
@@ -203,7 +226,6 @@ export class DashboardComponent implements OnInit {
         if (chart) {
           chart.destroy();
         }
-
         this.myChart = new Chart('dtsu666_dienapphatoday', {
           type: 'line',
           data: {
@@ -1191,7 +1213,6 @@ export class DashboardComponent implements OnInit {
     this.pzem017_ilastweek();
     this.pzem017_plastweek();
     this.pzem017_alastweek();
-
   }
   // DTSU666
   async dtsu666_uphalastweek() {
@@ -2347,7 +2368,6 @@ export class DashboardComponent implements OnInit {
         this.isLoading = false;
       });
 
-
     await this.http.PZEM017_bangcustom(this.datea, this.dateb).subscribe(
       (data1) => {
         this.pzem017table = data1;
@@ -2381,7 +2401,7 @@ export class DashboardComponent implements OnInit {
           data: {
             //labels: Array.from({ length: 7 }, (_, i) => subMonths(new Date(), i)).reverse().map(date => format(date, 'MMM')),
             //labels: date1.map(date => format(new Date(date), 'hh:mm')),
-            labels: date1.map(date => moment(date).format('HH:mm')),
+            labels: date1.map(date => moment(date).format('DD/MM - HH:mm')),
             datasets: [
               {
                 label: 'Ua',
@@ -2477,12 +2497,22 @@ export class DashboardComponent implements OnInit {
             },
             scales: {
               x: {
+                ticks: {
+                  font: {
+                    size: 10,     // Cỡ chữ
+                  }
+                },
                 offset: true,
                 grid: {
                   color: '#2d2b2b'
                 },
               },
               y: {
+                ticks: {
+                  font: {
+                    size: 10,     // Cỡ chữ
+                  }
+                },
                 display: true,
                 type: 'linear',
                 beginAtZero: true,
@@ -2524,7 +2554,7 @@ export class DashboardComponent implements OnInit {
         this.myChart = new Chart('dtsu666_dongdienphacustom', {
           type: 'line',
           data: {
-            labels: date1.map(date => moment(date).format('HH:mm')),
+            labels: date1.map(date => moment(date).format('DD/MM - HH:mm')),
             datasets: [
               {
                 label: 'Ia',
@@ -2621,12 +2651,22 @@ export class DashboardComponent implements OnInit {
 
             scales: {
               x: {
+                ticks: {
+                  font: {
+                    size: 10,     // Cỡ chữ
+                  }
+                },
                 offset: true,
                 grid: {
                   color: '#2d2b2b'
                 },
               },
               y: {
+                ticks: {
+                  font: {
+                    size: 10,     // Cỡ chữ
+                  }
+                },
                 display: true,
                 beginAtZero: true,
                 type: 'linear',
@@ -2676,7 +2716,7 @@ export class DashboardComponent implements OnInit {
         this.myChart = new Chart('dtsu666_pphacustom', {
           type: 'line',
           data: {
-            labels: date1.map(date => moment(date).format('HH:mm')),
+            labels: date1.map(date => moment(date).format('DD/MM - HH:mm')),
             datasets: [
               {
                 label: 'Pt',
@@ -2789,12 +2829,22 @@ export class DashboardComponent implements OnInit {
             },
             scales: {
               x: {
+                ticks: {
+                  font: {
+                    size: 10,     // Cỡ chữ
+                  }
+                },
                 offset: true,
                 grid: {
                   color: '#2d2b2b'
                 },
               },
               y: {
+                ticks: {
+                  font: {
+                    size: 10,     // Cỡ chữ
+                  }
+                },
                 display: true,
                 beginAtZero: true,
                 offset: true,
@@ -2831,7 +2881,7 @@ export class DashboardComponent implements OnInit {
         this.myChart = new Chart('dtsu666_diennangtieuthucustom', {
           type: 'line',
           data: {
-            labels: date22.map(date => moment(date).format('HH:mm')),
+            labels: date22.map(date => moment(date).format('DD/MM - HH:mm')),
             datasets: [
               {
                 label: 'Asum',
@@ -2926,12 +2976,22 @@ export class DashboardComponent implements OnInit {
             },
             scales: {
               x: {
+                ticks: {
+                  font: {
+                    size: 10,     // Cỡ chữ
+                  }
+                },
                 offset: true,
                 grid: {
                   color: '#2d2b2b'
                 },
               },
               y: {
+                ticks: {
+                  font: {
+                    size: 10,     // Cỡ chữ
+                  }
+                },
                 display: true,
                 beginAtZero: true,
                 offset: true,
@@ -2968,7 +3028,7 @@ export class DashboardComponent implements OnInit {
           data: {
             //labels: Array.from({ length: 7 }, (_, i) => subMonths(new Date(), i)).reverse().map(date => format(date, 'MMM')),
             //labels: date1.map(date => format(new Date(date), 'hh:mm')),
-            labels: date1.map(date => moment(date).format('HH:mm')),
+            labels: date1.map(date => moment(date).format('DD/MM - HH:mm')),
             datasets: [
               {
                 label: 'U1',
@@ -3029,12 +3089,22 @@ export class DashboardComponent implements OnInit {
 
             scales: {
               x: {
+                ticks: {
+                  font: {
+                    size: 10,     // Cỡ chữ
+                  }
+                },
                 offset: true,
                 grid: {
                   color: '#2d2b2b'
                 },
               },
               y: {
+                ticks: {
+                  font: {
+                    size: 10,     // Cỡ chữ
+                  }
+                },
                 display: true,
                 type: 'linear',
                 beginAtZero: true,
@@ -3071,7 +3141,7 @@ export class DashboardComponent implements OnInit {
         this.myChart = new Chart('pzem017_dongdienphacustom', {
           type: 'line',
           data: {
-            labels: date1.map(date => moment(date).format('HH:mm')),
+            labels: date1.map(date => moment(date).format('DD/MM - HH:mm')),
             datasets: [
               {
                 label: 'I1',
@@ -3132,12 +3202,22 @@ export class DashboardComponent implements OnInit {
 
             scales: {
               x: {
+                ticks: {
+                  font: {
+                    size: 10,     // Cỡ chữ
+                  }
+                },
                 offset: true,
                 grid: {
                   color: '#2d2b2b'
                 },
               },
               y: {
+                ticks: {
+                  font: {
+                    size: 10,     // Cỡ chữ
+                  }
+                },
                 display: true,
                 beginAtZero: true,
                 type: 'linear',
@@ -3174,7 +3254,7 @@ export class DashboardComponent implements OnInit {
         this.myChart = new Chart('pzem017congsuatcustom', {
           type: 'line',
           data: {
-            labels: date1.map(date => moment(date).format('HH:mm')),
+            labels: date1.map(date => moment(date).format('DD/MM - HH:mm')),
             datasets: [
               {
                 label: 'P1',
@@ -3235,12 +3315,22 @@ export class DashboardComponent implements OnInit {
 
             scales: {
               x: {
+                ticks: {
+                  font: {
+                    size: 10,     // Cỡ chữ
+                  }
+                },
                 offset: true,
                 grid: {
                   color: '#2d2b2b'
                 },
               },
               y: {
+                ticks: {
+                  font: {
+                    size: 10,     // Cỡ chữ
+                  }
+                },
                 display: true,
                 beginAtZero: true,
                 type: 'linear',
@@ -3266,7 +3356,6 @@ export class DashboardComponent implements OnInit {
         const avgArray_a1 = Array.from({ length: a1.length }, () => a1.reduce((acc, val) => acc + val) / a1.length);
 
 
-
         // Hủy Chart hiện tại (nếu có)
         const chart = Chart.getChart('pzem017diennangcustom');
         if (chart) {
@@ -3277,7 +3366,7 @@ export class DashboardComponent implements OnInit {
         this.myChart = new Chart('pzem017diennangcustom', {
           type: 'line',
           data: {
-            labels: date1.map(date => moment(date).format('HH:mm')),
+            labels: date1.map(date => moment(date).format('DD/MM - HH:mm')),
             datasets: [
               {
                 label: 'A1',
@@ -3338,12 +3427,22 @@ export class DashboardComponent implements OnInit {
 
             scales: {
               x: {
+                ticks: {
+                  font: {
+                    size: 10,     // Cỡ chữ
+                  }
+                },
                 offset: true,
                 grid: {
                   color: '#2d2b2b'
                 },
               },
               y: {
+                ticks: {
+                  font: {
+                    size: 10,     // Cỡ chữ
+                  }
+                },
                 display: true,
                 beginAtZero: true,
                 type: 'linear',
@@ -3407,9 +3506,6 @@ export class DashboardComponent implements OnInit {
       });
     }
   }
-
-
-
 
   //---------------------------------------------------------------------------------------------------------------------------------------
 

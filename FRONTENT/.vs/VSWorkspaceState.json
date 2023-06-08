@@ -1,12 +1,6 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\src",
-    "\\src\\app",
-    "\\src\\app\\layouts",
-    "\\src\\app\\layouts\\sidebar",
-    "\\src\\app\\pages",
-    "\\src\\app\\pages\\dashboard"
+    ""
   ],
   "PreviewInSolutionExplorer": false
 }

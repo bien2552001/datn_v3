@@ -74,9 +74,11 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
+              "host": "0.0.0.0",
               "browserTarget": "admindashboard:build:production"
             },
             "development": {
+              "host": "0.0.0.0",
               "browserTarget": "admindashboard:build:development"
             }
           },
